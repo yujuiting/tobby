@@ -1,0 +1,7 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    ["module-resolver", { "root": ["src"] }],
+    ["inline-react-svg", { "plugins": [{ "cleanupIDs": true }] }]
+  ]
+}

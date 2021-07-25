@@ -1,56 +1,25 @@
-import {
-  Link as ChakraLink,
-  Text,
-  Code,
-  List,
-  ListIcon,
-  ListItem,
-} from '@chakra-ui/react'
-import { CheckCircleIcon, LinkIcon } from '@chakra-ui/icons'
+import Layout from "components/layout";
+import Card, { CardImage, CardTitle } from "components/card";
+import Price from "components/price";
+import { Link } from "@chakra-ui/react";
 
-import { Hero } from '../components/Hero'
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { CTA } from '../components/CTA'
-import { Footer } from '../components/Footer'
-
-const Index = () => (
-  <Container height="100vh">
-    <Hero />
-    <Main>
-      <Text>
-        Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{' '}
-        <Code>typescript</Code>.
-      </Text>
-
-      <List spacing={3} my={0}>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink
-            isExternal
-            href="https://chakra-ui.com"
-            flexGrow={1}
-            mr={2}
-          >
-            Chakra UI <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink isExternal href="https://nextjs.org" flexGrow={1} mr={2}>
-            Next.js <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-      </List>
-    </Main>
-
-    <DarkModeSwitch />
-    <Footer>
-      <Text>Next ❤️ Chakra</Text>
-    </Footer>
-    <CTA />
-  </Container>
-)
-
-export default Index
+export default function Index() {
+  return (
+    <Layout>
+      <Link>
+        <Card>
+          <CardImage src="https://online.carrefour.com.tw/on/demandware.static/-/Sites-carrefour-tw-m-inner/default/dw188c8d87/images/large/0274115__-970g2.jpeg" />
+          <CardTitle>萬巒豬腳</CardTitle>
+          <Price>1.234</Price>
+        </Card>
+      </Link>
+      <Link>
+        <Card>
+          <CardImage src="https://online.carrefour.com.tw/dw/image/v2/BFHC_PRD/on/demandware.static/-/Sites-carrefour-tw-m-inner/default/dw3bc54cb3/images/large/0266644__-3.jpeg?sw=150&bgcolor=FFFFFF" />
+          <CardTitle>漁夫市集 花枝撞油條(3包入)</CardTitle>
+          <Price>0.789</Price>
+        </Card>
+      </Link>
+    </Layout>
+  );
+}
