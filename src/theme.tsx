@@ -56,7 +56,11 @@ const theme = extendTheme({
         _hover: {
           transform: "scale(1.02)",
           textDecoration: "none",
-          filter: "opacity(0.5)",
+          filter: "opacity(0.75)",
+        },
+        _active: {
+          transform: "scale(1)",
+          filter: "opacity(1)",
         },
       },
     },
