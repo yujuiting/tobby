@@ -2,7 +2,7 @@ import Layout from "components/layout";
 import Card, { CardImage, CardTitle } from "components/card";
 import Price from "components/price";
 import { Link, Skeleton, Text } from "@chakra-ui/react";
-import { Good, useGetGoodsQuery } from "api";
+import { Good, useGetGoodsQuery } from "store/api";
 
 export default function Index() {
   const { data, isLoading } = useGetGoodsQuery();

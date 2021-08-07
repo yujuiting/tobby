@@ -72,6 +72,13 @@ const theme = extendTheme({
         },
       },
     },
+    Modal: {
+      baseStyle: {
+        dialog: {
+          bg: "Background",
+        },
+      },
+    },
   },
 });
 
