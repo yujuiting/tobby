@@ -1,4 +1,3 @@
-import Layout from "components/layout";
 import Card, { CardImage, CardTitle } from "components/card";
 import Price from "components/price";
 import { Link, Skeleton, Text } from "@chakra-ui/react";
@@ -14,15 +13,13 @@ export default function Index() {
           <CardImage src={pictureURL} />
           <CardTitle>{name}</CardTitle>
           <Price>{price}</Price>
-          <Text>{quantity}</Text>
+          <Text>Stock: {quantity}</Text>
         </Card>
       </Link>
     );
   }
 
   return (
-    <Layout>
-      <Skeleton isLoaded={!isLoading}>{data?.goods.map(renderGood)}</Skeleton>
-    </Layout>
+    <Skeleton isLoaded={!isLoading}>{data?.goods.map(renderGood)}</Skeleton>
   );
 }

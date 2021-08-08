@@ -1,3 +1,4 @@
+import NextLink from "next/link";
 import {
   Grid,
   GridItem,
@@ -7,36 +8,38 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import ConnectWallet from "components/connect-wallet";
+// import ConnectWallet from "components/connect-wallet";
 import SignInButton from "./signin-button";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
   function renderHeader() {
     return (
-      <Stack direction="row" paddingTop={2} background="Background">
-        <Link>
-          <Heading variant="gradient-text">Tobby</Heading>
-        </Link>
+      <Stack
+        direction="row"
+        paddingTop={2}
+        background="Background"
+        boxShadow="0px 0px 24px 12px var(--chakra-colors-Background)"
+      >
+        <NextLink href="/">
+          <Link>
+            <Heading variant="gradient-text">Tobby</Heading>
+          </Link>
+        </NextLink>
         <Spacer />
-        <ConnectWallet />
+        {/* <ConnectWallet /> */}
         <SignInButton />
-      </Stack>
-    );
-  }
-
-  function renderSidebar() {
-    return (
-      <Stack position="sticky" top="64px">
-        <Link>Hot Items</Link>
-        <Link>Supplies</Link>
-        <Link>3C</Link>
       </Stack>
     );
   }
 
   function renderFooter() {
     return (
-      <Stack direction="row" width="100%" justifyContent="space-between">
+      <Stack
+        direction={["column", "row"]}
+        spacing={[8, 4]}
+        width="100%"
+        justifyContent="space-between"
+      >
         <Stack>
           <Link>
             <Heading variant="gradient-text">Tobby</Heading>
@@ -67,17 +70,16 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   return (
     <Grid
       templateRows="64px auto 160px"
-      templateColumns="repeat(5, 1fr)"
-      maxWidth="960px"
+      maxWidth="940px"
       minHeight="100vh"
       marginX="auto"
+      paddingX="10px"
     >
-      <GridItem colSpan={5} position="sticky" top={0}>
+      <GridItem position="sticky" top={0} zIndex={99}>
         {renderHeader()}
       </GridItem>
-      <GridItem colSpan={1}>{renderSidebar()}</GridItem>
-      <GridItem colSpan={4}>{children}</GridItem>
-      <GridItem colSpan={5}>{renderFooter()}</GridItem>
+      <GridItem paddingBottom={8}>{children}</GridItem>
+      <GridItem>{renderFooter()}</GridItem>
     </Grid>
   );
 }

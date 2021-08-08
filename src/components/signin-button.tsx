@@ -1,14 +1,10 @@
-import { Button, useDisclosure } from "@chakra-ui/react";
-import SignInModal from "./signin-modal";
+import NextLink from "next/link";
+import { Button } from "@chakra-ui/react";
 
 export default function SignInButton() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <>
-      <Button colorScheme="brand" onClick={onOpen}>
-        Sign In
-      </Button>
-      <SignInModal isOpen={isOpen} onClose={onClose} />
-    </>
+    <NextLink href="/sign-in">
+      <Button>Sign In</Button>
+    </NextLink>
   );
 }

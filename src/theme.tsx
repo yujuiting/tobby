@@ -79,6 +79,20 @@ const theme = extendTheme({
         },
       },
     },
+    Button: {
+      defaultProps: {
+        colorScheme: "brand",
+      },
+    },
+    Input: {
+      variants: {
+        outline: {
+          addon: {
+            bg: "transparent",
+          },
+        },
+      },
+    },
   },
 });
 

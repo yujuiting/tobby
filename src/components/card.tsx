@@ -32,18 +32,18 @@ export default function Card({ children, ...props }: BoxProps) {
 
   return (
     <Stack
-      direction="row"
-      alignItems="center"
-      padding={4}
-      margin={4}
+      direction={["column", "row"]}
+      alignItems={["flex-start", "center"]}
+      padding={[2, 4]}
+      margin={[2, 4]}
       boxShadow="0px 12px 24px 0px rgb(0 0 0 / 30%)"
-      borderRadius={16}
+      borderRadius={[8, 16]}
       position="relative"
       _before={{
         content: "''",
         display: "block",
         background: "linear-gradient(to right, #546180 0%, #364163 100%)",
-        borderRadius: 16,
+        borderRadius: [8, 16],
         position: "absolute",
         top: 0,
         left: 0,

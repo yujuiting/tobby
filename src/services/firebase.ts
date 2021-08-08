@@ -16,3 +16,12 @@ if (firebase.apps.length === 0) {
 firebase.auth().useDeviceLanguage();
 
 export default firebase;
+
+export function setupInvisibleReCAPTCHA(id: string) {
+  const recaptchaVerifier = new firebase.auth.RecaptchaVerifier(id, {
+    size: "invisible",
+  });
+  recaptchaVerifier.render();
+  window.recaptchaVerifier = recaptchaVerifier;
+  return recaptchaVerifier;
+}
