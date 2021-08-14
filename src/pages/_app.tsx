@@ -4,17 +4,29 @@ import { AppProps } from "next/app";
 import theme from "theme";
 import store from "store";
 import Layout from "components/layout";
+import useAutoSignIn from "hooks/useAutoSignIn";
+import useEnsureUserVerified from "hooks/useEnsureUserVerified";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
+  useAutoSignIn();
+
+  useEnsureUserVerified();
+
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  );
+}
+
+function AppWithProviders(props: AppProps) {
   return (
     <Provider store={store}>
       <ChakraProvider resetCSS theme={theme}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <App {...props} />
       </ChakraProvider>
     </Provider>
   );
 }
 
-export default MyApp;
+export default AppWithProviders;

@@ -22,6 +22,7 @@ export interface UserInfo {
   accessToken: string;
   createdAt: number;
   email: string;
+  emailVerified: boolean;
   phone: string;
   userID: string;
 }
@@ -29,21 +30,29 @@ export interface UserInfo {
 const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://139.162.47.183:8080/api/v1" }),
   endpoints: (builder) => ({
-    signUp: builder.mutation<
-      UserInfo,
-      { emailIDToken: string; phoneIDToken: string }
-    >({
-      query: ({ emailIDToken, phoneIDToken }) => ({
-        url: "/users/signup",
-        method: "POST",
-        body: { emailIDToken, phoneIDToken },
-      }),
-    }),
-    signIn: builder.mutation<UserInfo, string>({
-      query: (emailIDToken) => ({
+    signIn: builder.mutation<{ userInfo: UserInfo }, string>({
+      query: (idToken) => ({
         url: "/users/signin",
         method: "POST",
-        body: { emailIDToken },
+        body: { idToken },
+      }),
+    }),
+    emailVerified: builder.mutation<{ userInfo: UserInfo }, string>({
+      query: (idToken) => ({
+        url: "/users/emailVerified",
+        method: "patch",
+        body: { idToken },
+      }),
+    }),
+    phone: builder.mutation<
+      { userInfo: UserInfo },
+      { accessToken: string; idToken: string }
+    >({
+      query: ({ accessToken, idToken }) => ({
+        url: "/users/phone",
+        method: "patch",
+        body: { idToken },
+        headers: { accessToken },
       }),
     }),
     getGoods: builder.query<Goods, void>({
@@ -54,4 +63,9 @@ const api = createApi({
 
 export default api;
 
-export const { useGetGoodsQuery, useSignUpMutation, useSignInMutation } = api;
+export const {
+  useGetGoodsQuery,
+  useSignInMutation,
+  useEmailVerifiedMutation,
+  usePhoneMutation,
+} = api;

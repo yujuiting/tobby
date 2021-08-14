@@ -1,112 +1,67 @@
-import NextLink from "next/link";
 import { useRouter } from "next/router";
 import {
   Button,
   Center,
-  Divider,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input,
-  InputGroup,
-  InputLeftAddon,
-  InputLeftElement,
-  InputRightAddon,
-  InputRightElement,
-  PinInput,
-  PinInputField,
-  Spinner,
   Stack,
-  Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
 import { useEffect } from "react";
-import firebase, { setupInvisibleReCAPTCHA } from "services/firebase";
+import firebase from "services/firebase";
 import { useDispatch } from "store";
-import { useSignUpMutation } from "store/api";
-import { signedIn } from "store/user";
+import { useSignInMutation } from "store/api";
+import * as userActions from "store/user";
 import { useForm } from "react-hook-form";
+import { QueryStatus } from "@reduxjs/toolkit/query";
 
 interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
-  phoneNumber: string;
 }
 
 export default function SignIn() {
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
     watch,
-    formState: { isValid, isSubmitting, isSubmitted, errors },
+    formState: { isDirty, isValid, isSubmitting, isSubmitted, errors },
   } = useForm<FormData>({ mode: "onChange" });
 
-  const [error, setError] = useState("");
-
-  const [signUp, signUpResult] = useSignUpMutation();
-
-  const dispatch = useDispatch();
-
-  const { push } = useRouter();
-
-  const [sendingPhoneNumber, setSendingPhoneNumber] = useState(false);
-
-  const [phoneVerification, setPhoneVerification] =
-    useState<firebase.auth.ConfirmationResult | null>(null);
-
-  const [verifyingCode, setVerifyingCode] = useState(false);
-
-  const [phoneIDToken, setPhoneIDToken] = useState("");
+  const [signIn, signInResponse] = useSignInMutation();
 
   useEffect(() => {
-    if (signUpResult.error) setError("sign in failed");
-    if (signUpResult.data) {
-      dispatch(signedIn(signUpResult.data));
-      push("/");
+    if (signInResponse.status === QueryStatus.fulfilled) {
+      dispatch(userActions.signedIn(signInResponse.data.userInfo));
     }
-  }, [signUpResult, push]);
+    /**
+     * @todo error handling
+     */
+  }, [signInResponse]);
 
-  const submit = handleSubmit(async ({ email, password }, e) => {
-    e.preventDefault();
+  const submit = handleSubmit(async ({ email, password }) => {
+    const credential = await firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password);
 
-    try {
-      const credential = await firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password);
+    const { origin } = window.location;
 
-      const emailIDToken = await credential.user.getIdToken();
+    await credential.user.sendEmailVerification({
+      url: `${origin}/email-verification`,
+    });
 
-      await signUp({ emailIDToken, phoneIDToken });
-    } catch (err) {
-      setError(err.message || `${err}`);
-    }
+    const idToken = await credential.user.getIdToken();
+
+    await signIn(idToken);
+
+    router.push("/email-verification");
   });
-
-  async function sendCode() {
-    setSendingPhoneNumber(true);
-    try {
-      const verifier = setupInvisibleReCAPTCHA("send-verification-code");
-      const phonenumber = `+886${watch("phoneNumber")}`;
-      const resp = await firebase
-        .auth()
-        .signInWithPhoneNumber(phonenumber, verifier);
-      setPhoneVerification(resp);
-    } finally {
-      setSendingPhoneNumber(false);
-    }
-  }
-
-  async function verifyCode(code: string) {
-    if (!phoneVerification) return;
-    setVerifyingCode(true);
-    try {
-      const resp = await phoneVerification.confirm(code);
-      setPhoneIDToken(await resp.user.getIdToken());
-    } finally {
-      setVerifyingCode(false);
-    }
-  }
 
   return (
     <Center width="100%" height="100%">
@@ -164,68 +119,13 @@ export default function SignIn() {
               {errors.confirmPassword?.message}
             </FormErrorMessage>
           </FormControl>
-          <Divider />
-          <FormControl isRequired isInvalid={!!errors.phoneNumber}>
-            <FormLabel>Phone Number</FormLabel>
-            <InputGroup id="phonenumber">
-              <InputLeftAddon>+886</InputLeftAddon>
-              <Input
-                type="string"
-                {...register("phoneNumber", {
-                  required: true,
-                  pattern: {
-                    value: /^\d{6,10}$/,
-                    message: "It's invalid phone number.",
-                  },
-                })}
-              />
-              <Button
-                id="send-verification-code"
-                marginLeft={2}
-                onClick={sendCode}
-                isLoading={sendingPhoneNumber}
-                disabled={
-                  sendingPhoneNumber ||
-                  !watch("phoneNumber") ||
-                  !!errors.phoneNumber
-                }
-              >
-                Send
-              </Button>
-            </InputGroup>
-            <FormErrorMessage>{errors.phoneNumber?.message}</FormErrorMessage>
-          </FormControl>
-          <FormControl isRequired>
-            <FormLabel>Verification Code</FormLabel>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <PinInput otp onComplete={verifyCode} isDisabled={!!phoneIDToken}>
-                <PinInputField />
-                <PinInputField />
-                <PinInputField />
-                <PinInputField />
-                <PinInputField />
-                <PinInputField />
-              </PinInput>
-              <Spinner visibility={verifyingCode ? "visible" : "hidden"} />
-            </Stack>
-          </FormControl>
-          <Divider />
-          <FormControl isInvalid={!!error} textAlign="center">
-            <Button
-              isLoading={isSubmitting}
-              disabled={
-                !isValid || !phoneIDToken || isSubmitting || isSubmitted
-              }
-              type="submit"
-            >
-              Sign Up
-            </Button>
-            <FormErrorMessage>{error}</FormErrorMessage>
-          </FormControl>
+          <Button
+            type="submit"
+            disabled={!isDirty || !isValid || isSubmitting || isSubmitted}
+            isLoading={isSubmitting}
+          >
+            Sign Up
+          </Button>
         </Stack>
       </form>
     </Center>

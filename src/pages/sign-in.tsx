@@ -33,19 +33,19 @@ export default function SignIn() {
 
   const [error, setError] = useState("");
 
-  const [signIn, signInResult] = useSignInMutation();
+  const [signIn, signInResponse] = useSignInMutation();
 
   const dispatch = useDispatch();
 
   const { push } = useRouter();
 
   useEffect(() => {
-    if (signInResult.error) setError("sign in failed");
-    if (signInResult.data) {
-      dispatch(signedIn(signInResult.data));
+    if (signInResponse.error) setError("sign in failed");
+    if (signInResponse.data) {
+      dispatch(signedIn(signInResponse.data.userInfo));
       push("/");
     }
-  }, [signInResult, push]);
+  }, [signInResponse, push]);
 
   const submit = handleSubmit(async ({ email, password }, e) => {
     e.preventDefault();

@@ -15,9 +15,12 @@ const slice = createSlice({
     signedIn: (state, action: PayloadAction<UserInfo>) => {
       state.userInfo = action.payload;
     },
+    signedOut: (state) => {
+      state.userInfo = undefined;
+    },
   },
 });
 
-export const { signedIn } = slice.actions;
+export const { signedIn, signedOut } = slice.actions;
 
 export default slice;

@@ -10,8 +10,12 @@ import {
 } from "@chakra-ui/react";
 // import ConnectWallet from "components/connect-wallet";
 import SignInButton from "./signin-button";
+import SignOutButton from "./signout-button";
+import useUser from "hooks/useUser";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
+  const user = useUser();
+
   function renderHeader() {
     return (
       <Stack
@@ -19,6 +23,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
         paddingTop={2}
         background="Background"
         boxShadow="0px 0px 24px 12px var(--chakra-colors-Background)"
+        alignItems="center"
       >
         <NextLink href="/">
           <Link>
@@ -27,7 +32,14 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
         </NextLink>
         <Spacer />
         {/* <ConnectWallet /> */}
-        <SignInButton />
+        {user ? (
+          <>
+            <Text>{user.email}</Text>
+            <SignOutButton />
+          </>
+        ) : (
+          <SignInButton />
+        )}
       </Stack>
     );
   }
