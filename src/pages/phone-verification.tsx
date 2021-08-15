@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import useFirebaseAuthUser from "hooks/useFirebaseAuthUser";
 import useUser from "hooks/useUser";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,6 +20,8 @@ import firebase, { setupInvisibleReCAPTCHA } from "services/firebase";
 import { usePhoneMutation } from "store/api";
 
 export default function PhoneVerification() {
+  const router = useRouter();
+
   const user = useUser();
 
   const [confirmationResult, setConfirmationResult] =
@@ -27,6 +30,10 @@ export default function PhoneVerification() {
   const [idToken, setIdToken] = useState<string>();
 
   const [phone, phoneResponse] = usePhoneMutation();
+
+  useEffect(() => {
+    if (user.phone) router.replace("/");
+  }, [user, router.replace]);
 
   useEffect(() => {
     if (user && idToken) phone({ accessToken: user.accessToken, idToken });
