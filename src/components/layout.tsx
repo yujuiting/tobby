@@ -12,9 +12,39 @@ import {
 import SignInButton from "./signin-button";
 import SignOutButton from "./signout-button";
 import useUser from "hooks/useUser";
+import { useRouter } from "next/router";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
   const user = useUser();
+
+  const { pathname } = useRouter();
+
+  function renderUserSession() {
+    if (!user) return <SignInButton />;
+    return (
+      <>
+        <Text>{user.email}</Text>
+        <SignOutButton />
+      </>
+    );
+  }
+
+  function renderNavs() {
+    return (
+      <Stack direction="row">
+        <NextLink href="/">
+          <Link variant={pathname === "/" ? "active" : undefined}>
+            Products
+          </Link>
+        </NextLink>
+        <NextLink href="/orders">
+          <Link variant={pathname === "/orders" ? "active" : undefined}>
+            My Orders
+          </Link>
+        </NextLink>
+      </Stack>
+    );
+  }
 
   function renderHeader() {
     return (
@@ -24,22 +54,17 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
         background="Background"
         boxShadow="0px 0px 24px 12px var(--chakra-colors-Background)"
         alignItems="center"
+        spacing={4}
       >
         <NextLink href="/">
           <Link>
             <Heading variant="gradient-text">Tobby</Heading>
           </Link>
         </NextLink>
+        {renderNavs()}
         <Spacer />
         {/* <ConnectWallet /> */}
-        {user ? (
-          <>
-            <Text>{user.email}</Text>
-            <SignOutButton />
-          </>
-        ) : (
-          <SignInButton />
-        )}
+        {renderUserSession()}
       </Stack>
     );
   }

@@ -10,6 +10,7 @@ import {
   Spinner,
   Text,
 } from "@chakra-ui/react";
+import useFirebaseAuthUser from "hooks/useFirebaseAuthUser";
 import useUser from "hooks/useUser";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -60,6 +61,8 @@ interface EnterPhoneNumberProps {
 }
 
 function EnterPhoneNumber({ onSuccess }: EnterPhoneNumberProps) {
+  const authUser = useFirebaseAuthUser();
+
   const {
     register,
     handleSubmit,
@@ -68,9 +71,10 @@ function EnterPhoneNumber({ onSuccess }: EnterPhoneNumberProps) {
 
   const submit = handleSubmit(async ({ phoneNumber }) => {
     const verifier = setupInvisibleReCAPTCHA("send-verification-code");
-    const confirmationResult = await firebase
-      .auth()
-      .signInWithPhoneNumber(`+886${phoneNumber}`, verifier);
+    const confirmationResult = await authUser.linkWithPhoneNumber(
+      `+886${phoneNumber}`,
+      verifier
+    );
     onSuccess(confirmationResult);
   });
 
@@ -118,6 +122,9 @@ function EnterCode({ confirmationResult, onSuccess }: EnterCodeProps) {
     try {
       const credential = await confirmationResult.confirm(code);
       onSuccess(await credential.user.getIdToken());
+      debugger;
+    } catch (error) {
+      console.error(error);
     } finally {
       setVerifying(false);
     }

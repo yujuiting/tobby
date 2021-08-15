@@ -63,6 +63,11 @@ const theme = extendTheme({
           filter: "opacity(1)",
         },
       },
+      variants: {
+        active: {
+          textDecoration: "underline",
+        },
+      },
     },
     Heading: {
       variants: {

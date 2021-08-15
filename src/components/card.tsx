@@ -1,5 +1,4 @@
 import {
-  Box,
   BoxProps,
   Heading,
   HeadingProps,
@@ -10,7 +9,9 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-export default function Card({ children, ...props }: BoxProps) {
+export type CardProps = BoxProps;
+
+export default function Card({ children, ...props }: CardProps) {
   let image: React.ReactNode;
   let title: React.ReactNode;
   const rest: React.ReactNode[] = [];
@@ -56,7 +57,7 @@ export default function Card({ children, ...props }: BoxProps) {
       {image}
       {title}
       <Spacer />
-      <Box>{rest}</Box>
+      <Stack>{rest}</Stack>
     </Stack>
   );
 }
