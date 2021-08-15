@@ -77,7 +77,7 @@ const api = createApi({
     emailVerified: builder.mutation<{ userInfo: UserInfo }, string>({
       query: (idToken) => ({
         url: "/users/emailVerified",
-        method: "patch",
+        method: "PATCH",
         body: { idToken },
       }),
     }),
@@ -87,7 +87,7 @@ const api = createApi({
     >({
       query: ({ accessToken, idToken }) => ({
         url: "/users/phone",
-        method: "patch",
+        method: "PATCH",
         headers: { accessToken },
         body: { idToken },
       }),
@@ -101,7 +101,7 @@ const api = createApi({
     >({
       query: ({ accessToken, order }) => ({
         url: "/orders",
-        method: "post",
+        method: "POST",
         headers: { accessToken },
         body: order,
       }),
