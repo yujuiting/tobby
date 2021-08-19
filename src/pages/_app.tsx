@@ -18,7 +18,7 @@ const UseWalletProvider = dynamic(async () => {
     children: React.ReactNode;
   }) {
     return (
-      <OriginalUseWalletProvider connectors={{}}>
+      <OriginalUseWalletProvider chainId={42} connectors={{}}>
         {children}
       </OriginalUseWalletProvider>
     );
