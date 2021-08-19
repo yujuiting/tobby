@@ -2,7 +2,7 @@ import Card, { CardImage, CardTitle, CardProps } from "components/card";
 import Price from "components/price";
 import { Button, Text, useDisclosure } from "@chakra-ui/react";
 import { Good } from "store/api";
-import PlaceOrderModal from "./PlaceOrderModal";
+import PlaceOrderModal from "./place-order-modal";
 import useUser from "hooks/useUser";
 
 export interface ProductProps extends CardProps {
