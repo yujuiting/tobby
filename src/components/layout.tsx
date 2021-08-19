@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-// import ConnectWallet from "components/connect-wallet";
+import WalletButton from "components/wallet-button";
 import SignInButton from "./signin-button";
 import SignOutButton from "./signout-button";
 import useUser from "hooks/useUser";
@@ -24,6 +24,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
     return (
       <>
         <Text>{user.email}</Text>
+        <WalletButton />
         <SignOutButton />
       </>
     );
