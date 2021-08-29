@@ -15,11 +15,11 @@ export function useEthereumRequester() {
       if (!ethereum) throw new Error("you have to connect wallet first");
 
       try {
-        return await ethereum.request({ method, params });
+        return await ethereum.request?.({ method, params });
       } catch {}
 
       return await new Promise((resolve, reject) =>
-        ethereum.sendAsync({ method, params }, (error, response) =>
+        ethereum.sendAsync?.({ method, params }, (error, response) =>
           error ? reject(error) : resolve(response)
         )
       );

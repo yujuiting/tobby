@@ -1,14 +1,17 @@
 import { Button, FormControl, FormLabel, Stack, Text } from "@chakra-ui/react";
-import { BigNumber } from "@ethersproject/bignumber";
 import usePayer from "hooks/usePayer";
+import { useState } from "react";
 import { Order } from "store/api";
+import { displayUSDC } from "utils";
 
 export interface OrderDetailProps {
   order: Order;
 }
 
 export default function OrderDetail({ order }: OrderDetailProps) {
-  const pay = usePayer();
+  const [pay, connected] = usePayer();
+
+  const [paying, setPaying] = useState(false);
 
   return (
     <Stack
@@ -54,7 +57,7 @@ export default function OrderDetail({ order }: OrderDetailProps) {
       </FormControl>
       <FormControl display="flex" flexDirection="row">
         <FormLabel width="20%">Price</FormLabel>
-        <Text>{order.price.toLocaleString()}</Text>
+        <Text>{displayUSDC(order.price)}</Text>
       </FormControl>
       <FormControl display="flex" flexDirection="row">
         <FormLabel width="20%">Created At</FormLabel>
@@ -64,8 +67,19 @@ export default function OrderDetail({ order }: OrderDetailProps) {
         <FormLabel width="20%">Updated At</FormLabel>
         <Text>{new Date(order.updatedAt).toLocaleString()}</Text>
       </FormControl>
-      <Button onClick={() => pay(order.paymentID, order.price.toString())}>
-        Pay
+      <Button
+        onClick={async () => {
+          setPaying(true);
+          try {
+            await pay(order.paymentID, order.price.toString());
+          } finally {
+            setPaying(false);
+          }
+        }}
+        disabled={!connected || paying}
+        isLoading={paying}
+      >
+        Pay {!connected && "(You have to connect wallet first)"}
       </Button>
     </Stack>
   );

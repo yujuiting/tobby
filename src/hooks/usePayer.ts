@@ -9,8 +9,10 @@ export default function usePayer() {
 
   const request = useEthereumRequester();
 
-  return useCallback(
+  const pay = useCallback(
     async (paymentID: string, amount: string) => {
+      if (!providerRef.current) throw new Error("wallet not connected");
+
       const signer = providerRef.current.getSigner();
 
       const paymentProcessor = new Contract(
@@ -21,15 +23,31 @@ export default function usePayer() {
 
       const usdc = new Contract(USDC.networks[42].address, USDC.abi, signer);
 
-      const success = await usdc.functions.approve(
-        paymentProcessor.address,
-        amount
-      );
+      try {
+        const approveCall = await usdc.functions.approve(
+          paymentProcessor.address,
+          amount
+        );
 
-      if (!success) throw new Error("approve USDC failed");
+        await approveCall.wait();
+      } catch (error) {
+        console.error(error);
 
-      await paymentProcessor.functions.pay(amount, paymentID);
+        throw new Error("approve USDC failed");
+      }
+
+      try {
+        const payCall = await paymentProcessor.functions.pay(amount, paymentID);
+
+        await payCall.wait();
+      } catch (error) {
+        console.error(error);
+
+        throw new Error("pay USDC failed");
+      }
     },
     [request]
   );
+
+  return [pay, !!providerRef.current] as const;
 }
